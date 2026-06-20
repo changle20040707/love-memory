@@ -1,0 +1,189 @@
+{
+  "couple": {
+    "name1": "常应熙",
+    "name2": "周夕茹",
+    "anniversary": "2022-07-04",
+    "avatar1": "images/avatar1.jpg",
+    "avatar2": "images/avatar2.jpg",
+    "story": "我们的爱情故事从这里开始..."
+  },
+  "photos": [
+    {
+      "id": 1,
+      "images": [
+        "images/photos/lijiang1.jpg",
+        "images/photos/lijiang2.jpg",
+        "images/photos/lijiang3.jpg"
+      ],
+      "title": "第一次旅行",
+      "location": "云南丽江",
+      "date": "2022-07-16",
+      "description": "这是我们第一次出来旅行，第一次牵手，特别特别浪漫",
+      "category": "旅行"
+    },
+    {
+      "id": 2,
+      "images": [
+        "images/photos/21.jpg",
+        "images/photos/22.jpg",
+        "images/photos/23.jpg"
+      ],
+      "title": "第一次去宝贝姐姐家",
+      "location": "四川攀枝花",
+      "date": "2023-02-02",
+      "description": "这是我第一去宝贝姐姐家，真的特别紧张，不过她们真的很好，我也很开心",
+      "category": "日常"
+    },
+    {
+      "id": 3,
+       "images": [
+        "images/photos/31.jpg",
+        "images/photos/32.jpg",
+        "images/photos/33.jpg"
+      ],
+      "title": "第一次去游乐园",
+      "location": "四川攀枝花鑫岛游乐园",
+      "date": "2023-08-07",
+      "description": "这是我们第一次一起去游乐园，虽然天色很晚，不过我们很幸福",
+      "category": "日常"
+    },
+    {
+      "id": 4,
+      "images": [
+        "images/photos/41.jpg",
+        "images/photos/42.jpg",
+        "images/photos/43.jpg",
+        "images/photos/44.jpg"
+      ],
+      "title": "国庆兰州行",
+      "location": "甘肃兰州",
+      "date": "2023-10-01",
+      "description": "国庆我们相聚兰州，一起吃了兰州牛肉面，一起看了黄河，还一起化了妆，还给宝贝补了个生日，无拘无束享受属于我们俩自己的时光",
+      "category": "旅行"
+    },
+    {
+      "id": 5,
+       "images": [
+        "images/photos/51.jpg",
+        "images/photos/52.jpg"
+      ],
+      "title": "第一次去宝贝学校",
+      "location": "四川达州",
+      "date": "2024-01-02",
+      "description": "这是我第一次去到宝贝的学校，这种感觉很神奇，吃你平时吃的美食，走进你的日常，可惜的是照片拍得太少",
+      "category": "旅行"
+    },
+    {
+      "id": 6,
+      "images": [
+        "images/photos/61.jpg",
+        "images/photos/62.jpg",
+        "images/photos/63.jpg"
+      ],
+      "title": "宝贝第一次来我的家",
+      "location": "四川攀枝花",
+      "date": "2024-01-15",
+      "description": "这是宝贝第一次到我们家来，还一起吃了楼下的美味鸭脑壳，嘿嘿很开心",
+      "category": "日常"
+    },
+    {
+      "id": 7,
+      "images": [
+        "images/photos/71.jpg",
+        "images/photos/72.jpg",
+        "images/photos/73.jpg"
+      ],
+      "title": "第一次一起放烟花",
+      "location": "四川攀枝花盐边县",
+      "date": "2024-02-19",
+      "description": "这是我俩第一次一起放烟花，我还第一次和叔叔线下见面，很害羞，那天烟花很美，但宝贝更美",
+      "category": "日常"
+    },
+    {
+      "id": 8,
+      "images": [
+        "images/photos/81.jpg",
+        "images/photos/82.jpg",
+        "images/photos/83.jpg",
+        "images/photos/84.jpg",
+        "images/photos/85.jpg",
+        "images/photos/86.jpg"
+      ],
+      "title": "国庆重庆行",
+      "location": "重庆市沙坪坝区",
+      "date": "2024-10-1",
+      "description": "这次我们跨越千里来到了重庆市，吃到了美味的火锅，第一次发现自己有点发福了",
+      "category": "旅行"
+    },
+    {
+      "id": 9,
+      "images": [
+        "images/photos/91.jpg",
+        "images/photos/92.jpg",
+        "images/photos/93.jpg"
+      ],
+      "title": "第二次达州行",
+      "location": "四川达州",
+      "date": "2025-02-27",
+      "description": "这是我俩第二在达州相聚，刚刚开春，万物复苏，春光无限好",
+      "category": "旅行"
+    },
+    {
+      "id": 10,
+      "images": [
+        "images/photos/101.jpg",
+        "images/photos/102.jpg",
+        "images/photos/103.jpg"
+      ],
+      "title": "成都规培见面",
+      "location": "四川成都",
+      "date": "2025-01-14",
+      "description": "宝贝去成都规培，我第一次去到她规培的地方，嘻嘻还是挺不错的，就是没咋拍合照",
+      "category": "旅行"
+    },
+    {
+      "id": 11,
+      "images": [
+        "images/photos/111.jpg",
+        "images/photos/112.jpg",
+        "images/photos/113.jpg",
+        "images/photos/114.jpg",
+        "images/photos/115.jpg"
+      ],
+      "title": "九寨沟行",
+      "location": "四川阿坝藏族自治州九寨沟景区",
+      "date": "2025-02-10",
+      "description": "我们这一次来到了九寨沟，拍了很多很多好看的照片，真是一次难忘的旅行",
+      "category": "旅行"
+    },
+    {
+      "id": 12,
+      "images": [
+        "images/photos/121.jpg",
+        "images/photos/122.jpg",
+        "images/photos/123.jpg",
+        "images/photos/124.jpg",
+        "images/photos/125.jpg"
+      ],
+      "title": "大美新疆行",
+      "location": "新疆维吾尔自治区",
+      "date": "2025-05-23",
+      "description": "这次宝贝坐了两天的火车来到了新疆，来到了我生活的地方，真的太不容易了，新疆真美，宝贝也美，以后我们有钱还会再回来的",
+      "category": "旅行"
+    }
+    
+  ],
+  "memorialDays": [
+    { "name": "恋爱纪念日", "month": 7, "day": 4, "yearly": true },
+    { "name": "情人节", "month": 2, "day": 14, "yearly": true },
+    { "name": "她的生日", "month": 9, "day": 5, "yearly": true },
+    { "name": "七夕节", "month": 8, "day": 10, "yearly": true },
+    { "name": "圣诞节", "month": 12, "day": 25, "yearly": true }
+  ],
+  "backgroundMusic": "music/love-song.mp3",
+  "site": {
+    "title": "我们的爱情故事",
+    "subtitle": "记录每一个美好瞬间",
+    "theme": "pink"
+  }
+}
