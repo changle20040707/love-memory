@@ -74,25 +74,29 @@ function initMusicPlayer() {
   ];
   let currentIndex = 0;
   let isPlaying = false;
+  let savedTime = null; // 保存的播放位置，等音频加载完再跳转
 
   const audio = new Audio();
   audio.volume = 0.4;
   audio.preload = 'auto';
 
   // 尝试从 sessionStorage 恢复音乐状态（全页跳转后保持连续）
+  let savedIndex = 0;
+  let wasPlaying = false;
   try {
     const savedState = sessionStorage.getItem('loveMusicState');
     if (savedState) {
       const state = JSON.parse(savedState);
-      currentIndex = state.currentIndex || 0;
+      savedIndex = state.currentIndex || 0;
+      savedTime = state.currentTime || 0;
       audio.volume = state.volume || 0.4;
-      audio.currentTime = state.currentTime || 0;
+      wasPlaying = state.isPlaying || false;
       sessionStorage.removeItem('loveMusicState');
     }
   } catch (e) { /* 忽略 */ }
 
   // 加载当前歌曲
-  function loadTrack(index) {
+  function loadTrack(index, restoreTime) {
     const track = playlist[index];
     audio.src = track.file;
     audio.load();
@@ -102,7 +106,20 @@ function initMusicPlayer() {
     // 更新显示的歌名
     const titleEl = document.querySelector('.music-title');
     if (titleEl) titleEl.textContent = `🎵 ${track.name}`;
+
+    // 如果有保存的播放位置，音频加载完后跳转
+    if (restoreTime && restoreTime > 0) {
+      audio.addEventListener('loadedmetadata', function onLoaded() {
+        audio.removeEventListener('loadedmetadata', onLoaded);
+        if (audio.duration && restoreTime < audio.duration) {
+          audio.currentTime = restoreTime;
+        }
+      }, { once: true });
+    }
   }
+
+  // 加载初始歌曲（如果有保存的状态则跳转到对应位置）
+  loadTrack(savedIndex, savedTime);
 
   // 播放下一首
   function nextTrack() {
@@ -141,9 +158,6 @@ function initMusicPlayer() {
   audio.addEventListener('ended', () => {
     nextTrack();
   });
-
-  // 加载第一首
-  loadTrack(0);
 
   // 创建播放器 UI
   const player = document.createElement('div');
@@ -247,47 +261,58 @@ function initMusicPlayer() {
 
   // 尝试自动播放（新加载时播放，或从 sessionStorage 恢复后继续播放）
   function tryAutoPlay() {
-    let shouldTry = true;
+    // 如果有保存的播放状态，尝试继续播放
+    if (!wasPlaying && !savedTime) {
+      // 没有保存的状态，仍然尝试自动播放（浏览器可能拦截）
+      setupClickToPlay();
+      return;
+    }
 
-    // 检查是否有保存的播放状态
-    try {
-      const savedState = sessionStorage.getItem('loveMusicState');
-      if (savedState) {
-        const state = JSON.parse(savedState);
-        if (state.isPlaying) shouldTry = true;
-      }
-    } catch (e) {}
-
-    if (!shouldTry) return;
-
-    setTimeout(() => {
+    // 等待音频加载完成后播放
+    const startPlayback = () => {
       const playPromise = audio.play();
       if (playPromise !== undefined) {
         playPromise.then(() => {
           player.classList.add('playing');
           musicIcon.textContent = '🎶';
           isPlaying = true;
-        }).catch(() => {});
+        }).catch(() => {
+          // 自动播放被拦截，等用户点击
+          setupClickToPlay();
+        });
       }
-    }, 1200);
+    };
+
+    // 如果音频已加载，稍后播放；否则等待加载
+    if (audio.readyState >= 2) {
+      setTimeout(startPlayback, 300);
+    } else {
+      audio.addEventListener('canplay', startPlayback, { once: true });
+      // 超时保护：5秒后如果还没加载完也尝试播放
+      setTimeout(() => {
+        if (!isPlaying) startPlayback();
+      }, 5000);
+    }
   }
 
   tryAutoPlay();
 
   // 用户点击页面时自动播放
-  document.addEventListener('click', function autoPlayHandler() {
-    if (!isPlaying) {
-      const playPromise = audio.play();
-      if (playPromise !== undefined) {
-        playPromise.then(() => {
-          player.classList.add('playing');
-          musicIcon.textContent = '🎶';
-          isPlaying = true;
-        }).catch(() => {});
+  function setupClickToPlay() {
+    document.addEventListener('click', function autoPlayHandler() {
+      if (!isPlaying) {
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+          playPromise.then(() => {
+            player.classList.add('playing');
+            musicIcon.textContent = '🎶';
+            isPlaying = true;
+          }).catch(() => {});
+        }
       }
-    }
-    document.removeEventListener('click', autoPlayHandler);
-  }, { once: true });
+      document.removeEventListener('click', autoPlayHandler);
+    }, { once: true });
+  }
 
   // 存储到全局（含 currentIndex 供页面跳转时保存状态）
   window.audioPlayer = { audio, player, isPlaying, currentIndex, togglePlay, nextTrack, prevTrack };
