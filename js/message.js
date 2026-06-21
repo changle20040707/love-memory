@@ -30,8 +30,10 @@ document.addEventListener('DOMContentLoaded', function() {
   initMessage();
 });
 
-// 导出初始化函数，供 SPA 路由切换后调用
+// 导出初始化函数
 function initMessage() {
+  // 确认当前是留言板页面
+  if (!document.getElementById('messageForm')) return;
   loadMessages();
   initFormHandlers();
   initEmojiBar();

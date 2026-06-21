@@ -3,7 +3,7 @@
  */
 
 let herPhotos = [];
-let currentPhotoIndex = 0;
+let herCurrentIndex = 0;
 let herLightboxInitialized = false;
 
 // 初始化页面（兼容直接加载和 SPA 路由切换）
@@ -162,7 +162,7 @@ function openHerLightbox(index) {
   const photo = herPhotos[index];
   if (!photo) return;
 
-  currentPhotoIndex = index;
+  herCurrentIndex = index;
   const lightbox = document.getElementById('herLightbox');
   const img = document.getElementById('herLightboxImg');
   const title = document.getElementById('herLightboxTitle');
@@ -188,15 +188,15 @@ function closeHerLightbox() {
 // 上一张
 function showPrevHerPhoto() {
   if (herPhotos.length === 0) return;
-  currentPhotoIndex = (currentPhotoIndex - 1 + herPhotos.length) % herPhotos.length;
-  openHerLightbox(currentPhotoIndex);
+  herCurrentIndex = (herCurrentIndex - 1 + herPhotos.length) % herPhotos.length;
+  openHerLightbox(herCurrentIndex);
 }
 
 // 下一张
 function showNextHerPhoto() {
   if (herPhotos.length === 0) return;
-  currentPhotoIndex = (currentPhotoIndex + 1) % herPhotos.length;
-  openHerLightbox(currentPhotoIndex);
+  herCurrentIndex = (herCurrentIndex + 1) % herPhotos.length;
+  openHerLightbox(herCurrentIndex);
 }
 
 // 格式化日期
