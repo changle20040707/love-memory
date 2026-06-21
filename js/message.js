@@ -220,7 +220,7 @@ function renderMessages() {
 
   // 渲染留言
   list.innerHTML = messages.map((msg, index) => `
-    <div class="message-card fade-in" style="animation-delay: ${index * 0.05}s" data-id="${msg.id}">
+    <div class="message-card fade-in reveal tilt-card" style="animation-delay: ${index * 0.05}s" data-id="${msg.id}">
       <button class="delete-btn" onclick="deleteMessage(${msg.id})" title="删除">×</button>
       <div class="message-header">
         <div class="message-author">

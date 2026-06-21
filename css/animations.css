@@ -1,4 +1,4 @@
-/* 动画效果 - 恋爱纪念网站 */
+/* 动画效果 - 恋爱纪念网站 v2.0 */
 
 /* 爱心飘落动画 */
 .falling-hearts {
@@ -17,29 +17,33 @@
   top: -50px;
   font-size: 20px;
   animation: fall linear forwards;
-  opacity: 0.7;
+  opacity: 0.6;
+  filter: blur(0.5px);
 }
 
 @keyframes fall {
   0% {
-    transform: translateY(0) rotate(0deg);
-    opacity: 0.7;
+    transform: translateY(0) rotate(0deg) scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.8;
   }
   100% {
-    transform: translateY(100vh) rotate(360deg);
+    transform: translateY(105vh) rotate(360deg) scale(0.5);
     opacity: 0;
   }
 }
 
-/* 淡入动画 */
+/* 淡入上移动画（最常用） */
 .fade-in {
-  animation: fadeIn 0.8s ease-in-out;
+  animation: fadeInUp 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-@keyframes fadeIn {
+@keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(24px);
   }
   to {
     opacity: 1;
@@ -47,15 +51,31 @@
   }
 }
 
+/* 淡入缩放 */
+.fade-in-scale {
+  animation: fadeInScale 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 /* 从左滑入 */
 .slide-in-left {
-  animation: slideInLeft 0.6s ease-out;
+  animation: slideInLeft 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 @keyframes slideInLeft {
   from {
     opacity: 0;
-    transform: translateX(-50px);
+    transform: translateX(-40px);
   }
   to {
     opacity: 1;
@@ -65,13 +85,13 @@
 
 /* 从右滑入 */
 .slide-in-right {
-  animation: slideInRight 0.6s ease-out;
+  animation: slideInRight 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 @keyframes slideInRight {
   from {
     opacity: 0;
-    transform: translateX(50px);
+    transform: translateX(40px);
   }
   to {
     opacity: 1;
@@ -81,13 +101,13 @@
 
 /* 缩放动画 */
 .scale-in {
-  animation: scaleIn 0.5s ease-out;
+  animation: scaleIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 @keyframes scaleIn {
   from {
     opacity: 0;
-    transform: scale(0.8);
+    transform: scale(0.85);
   }
   to {
     opacity: 1;
@@ -95,17 +115,22 @@
   }
 }
 
-/* 弹跳动画 */
+/* 弹跳动画（用于强调） */
 .bounce {
-  animation: bounce 0.6s ease-out;
+  animation: bounce 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
 }
 
 @keyframes bounce {
-  0%, 100% {
-    transform: translateY(0);
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
   }
-  50% {
-    transform: translateY(-20px);
+  60% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
   }
 }
 
@@ -127,18 +152,24 @@
   50% { border-color: var(--primary-color); }
 }
 
-/* 浮动动画 */
+/* 浮动动画（用于装饰元素） */
 .float {
   animation: float 3s ease-in-out infinite;
 }
 
 @keyframes float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-15px);
-  }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+/* 柔和浮动（更轻柔） */
+.float-soft {
+  animation: floatSoft 4s ease-in-out infinite;
+}
+
+@keyframes floatSoft {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
 }
 
 /* 闪烁动画 */
@@ -147,14 +178,8 @@
 }
 
 @keyframes twinkle {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.5;
-    transform: scale(1.1);
-  }
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.15); }
 }
 
 /* 旋转动画 */
@@ -163,12 +188,8 @@
 }
 
 @keyframes rotate {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 /* 心跳动画 */
@@ -177,21 +198,11 @@
 }
 
 @keyframes heartbeat {
-  0%, 100% {
-    transform: scale(1);
-  }
-  14% {
-    transform: scale(1.1);
-  }
-  28% {
-    transform: scale(1);
-  }
-  42% {
-    transform: scale(1.1);
-  }
-  70% {
-    transform: scale(1);
-  }
+  0%, 100% { transform: scale(1); }
+  14% { transform: scale(1.15); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.15); }
+  70% { transform: scale(1); }
 }
 
 /* 波纹效果 */
@@ -208,9 +219,9 @@
   width: 0;
   height: 0;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.4);
   transform: translate(-50%, -50%);
-  transition: width 0.6s, height 0.6s;
+  transition: width 0.6s ease-out, height 0.6s ease-out;
 }
 
 .ripple:active::after {
@@ -220,14 +231,8 @@
 
 /* 闪烁星星效果 */
 @keyframes sparkle {
-  0%, 100% {
-    opacity: 0;
-    transform: scale(0);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1);
-  }
+  0%, 100% { opacity: 0; transform: scale(0); }
+  50% { opacity: 1; transform: scale(1); }
 }
 
 .sparkle {
@@ -238,77 +243,136 @@
 .gradient-bg {
   background: linear-gradient(-45deg, #ff6b9d, #ff8fab, #ffb3c6, #ffd6e0);
   background-size: 400% 400%;
-  animation: gradientShift 15s ease infinite;
+  animation: gradientShift 8s ease infinite;
 }
 
 @keyframes gradientShift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 /* 照片悬停效果 */
 .photo-hover {
-  transition: all 0.4s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .photo-hover:hover {
-  transform: scale(1.05) rotate(2deg);
-  box-shadow: 0 10px 30px rgba(255, 107, 157, 0.3);
+  transform: scale(1.05) rotate(1.5deg);
+  box-shadow: 0 15px 40px rgba(255, 107, 157, 0.25);
 }
 
 /* 加载动画 */
 .loading {
   display: inline-block;
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   border: 3px solid var(--light-pink);
   border-top-color: var(--primary-color);
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
 }
 
 /* 涟漪扩散效果 */
 @keyframes ripple-expand {
-  0% {
-    transform: scale(0);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(4);
-    opacity: 0;
-  }
+  0% { transform: scale(0); opacity: 1; }
+  100% { transform: scale(4); opacity: 0; }
 }
 
 .ripple-effect {
   position: absolute;
   border-radius: 50%;
-  background: rgba(255, 107, 157, 0.3);
-  animation: ripple-expand 0.6s ease-out;
+  background: rgba(255, 107, 157, 0.25);
+  animation: ripple-expand 0.6s ease-out forwards;
 }
 
 /* 文字渐显效果 */
 .text-reveal {
-  animation: textReveal 0.8s ease-out forwards;
+  animation: textReveal 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 @keyframes textReveal {
-  0% {
-    clip-path: inset(0 100% 0 0);
+  0% { clip-path: inset(0 100% 0 0); }
+  100% { clip-path: inset(0 0 0 0); }
+}
+
+/* 滑入上移（页面切换用） */
+.slide-up {
+  animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
   }
-  100% {
-    clip-path: inset(0 0 0 0);
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 卡片入场序列动画 */
+.card-enter {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: cardEnter 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes cardEnter {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 悬停发光效果 */
+.hover-glow {
+  transition: all 0.3s ease;
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 25px rgba(255, 107, 157, 0.3), 0 0 50px rgba(255, 107, 157, 0.1);
+  transform: translateY(-2px);
+}
+
+/* 脉冲提醒动画 */
+.pulse-notice {
+  animation: pulseNotice 2s ease-in-out infinite;
+}
+
+@keyframes pulseNotice {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 107, 157, 0.4); }
+  50% { box-shadow: 0 0 0 12px rgba(255, 107, 157, 0); }
+}
+
+/* 心形跳动（更柔和） */
+.heart-soft {
+  animation: heartSoft 2s ease-in-out infinite;
+  display: inline-block;
+}
+
+@keyframes heartSoft {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+
+/* 页面切换过渡动画 */
+.page-enter {
+  animation: pageEnter 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

@@ -13,6 +13,8 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function initAlbum() {
+  // 确认当前是相册页面
+  if (!document.getElementById('photoGrid')) return;
   // 等待配置加载
   if (!window.app || !window.app.config) {
     setTimeout(initAlbum, 100);
@@ -59,7 +61,7 @@ function renderPhotos() {
     const imageCount = images.length;
 
     return `
-    <div class="photo-item fade-in" data-index="${index}" style="animation-delay: ${index * 0.1}s">
+    <div class="photo-item fade-in reveal tilt-card" data-index="${index}" style="animation-delay: ${index * 0.1}s">
       <img src="${thumbSrc}" alt="${photo.title}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 300 250%22><rect fill=%22%23ffe5ec%22 width=%22300%22 height=%22250%22/><text x=%2250%%22 y=%2250%%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23ff6b9d%22 font-size=%2240%22>📷</text></svg>'">
       ${imageCount > 1 ? `<div class="photo-badge">${imageCount}张</div>` : ''}
       <div class="photo-overlay">
@@ -75,6 +77,20 @@ function renderPhotos() {
       </div>
     </div>
   `}).join('');
+
+  // 强制加载图片（解决 SPA 切换后图片不加载的问题）
+  const allImgs = grid.querySelectorAll('img');
+  if (allImgs.length === 0 && filteredPhotos.length > 0) {
+    // 如果图片数为 0 但实际有照片，重新触发渲染
+    setTimeout(() => renderPhotos(), 50);
+  }
+  allImgs.forEach(img => {
+    if (!img.complete) {
+      const src = img.src;
+      img.src = '';
+      img.src = src;
+    }
+  });
 
   // 添加点击事件
   document.querySelectorAll('.photo-item').forEach(item => {

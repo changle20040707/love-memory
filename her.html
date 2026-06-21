@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>她的美图 - 我们的爱情故事</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <style>
+    /* 页面专属样式 - 加载后自动移到 main 内 */
+  </style>
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo">
+        <span class="logo-icon">💕</span>
+        <span>我们的爱情故事</span>
+      </div>
+      <ul class="nav-links">
+        <li><a href="index.html">首页</a></li>
+        <li><a href="album.html">相册</a></li>
+        <li><a href="her.html" class="active">她的美图</a></li>
+        <li><a href="countdown.html">纪念日</a></li>
+        <li><a href="message.html">留言板</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- 主内容 -->
+  <main class="main-content">
+    <style>
+      /* ===== 她的美图 页面专属样式 ===== */
+
+      /* 顶部大标题 - 她的名字 */
+      .her-hero {
+        text-align: center;
+        padding: 60px 20px 40px;
+        position: relative;
+      }
+
+      .her-hero::before {
+        content: '👑';
+        display: block;
+        font-size: 3rem;
+        margin-bottom: 10px;
+        animation: floatSoft 3s ease-in-out infinite;
+      }
+
+      .her-name {
+        font-size: 3.5rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #ff6b9d, #e91e63, #ff8fab, #ff6b9d);
+        background-size: 300% 300%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: gradientText 4s ease infinite;
+        letter-spacing: 6px;
+        margin-bottom: 12px;
+        line-height: 1.2;
+      }
+
+      .her-subtitle {
+        font-size: 1.2rem;
+        color: #999;
+        letter-spacing: 4px;
+      }
+
+      .her-subtitle .heart-icon {
+        display: inline-block;
+        animation: heartbeat 1.5s ease-in-out infinite;
+      }
+
+      /* 爱情寄语 */
+      .her-quote {
+        max-width: 600px;
+        margin: 30px auto 50px;
+        text-align: center;
+        padding: 30px 40px;
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 107, 157, 0.12);
+        box-shadow: 0 5px 25px rgba(255, 107, 157, 0.08);
+        position: relative;
+      }
+
+      .her-quote::before {
+        content: '"';
+        position: absolute;
+        top: -10px;
+        left: 15px;
+        font-size: 4rem;
+        color: rgba(255, 107, 157, 0.15);
+        font-family: Georgia, serif;
+        line-height: 1;
+      }
+
+      .her-quote::after {
+        content: '"';
+        position: absolute;
+        bottom: -30px;
+        right: 15px;
+        font-size: 4rem;
+        color: rgba(255, 107, 157, 0.15);
+        font-family: Georgia, serif;
+        line-height: 1;
+      }
+
+      .her-quote-text {
+        font-size: 1.15rem;
+        color: #666;
+        line-height: 1.8;
+        font-style: italic;
+        letter-spacing: 1px;
+      }
+
+      .her-quote-author {
+        margin-top: 15px;
+        font-size: 0.9rem;
+        color: #ff6b9d;
+        font-weight: 500;
+        font-style: normal;
+      }
+
+      /* 照片墙标题 */
+      .her-gallery-title {
+        text-align: center;
+        margin-bottom: 40px;
+      }
+
+      .her-gallery-title h2 {
+        font-size: 1.8rem;
+        color: #333;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+      }
+
+      .her-gallery-title p {
+        color: #999;
+        margin-top: 8px;
+        font-size: 0.95rem;
+      }
+
+      /* 照片网格 - 特有样式 */
+      .her-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 25px;
+        padding: 10px 0 30px;
+      }
+
+      .her-item {
+        border-radius: 16px;
+        overflow: hidden;
+        background: white;
+        box-shadow: 0 5px 25px rgba(255, 107, 157, 0.12);
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        transform: translateY(0);
+      }
+
+      .her-item:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 45px rgba(255, 107, 157, 0.25);
+      }
+
+      .her-item .photo-wrapper {
+        width: 100%;
+        height: 320px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .her-item .photo-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s ease;
+      }
+
+      .her-item:hover .photo-wrapper img {
+        transform: scale(1.08);
+      }
+
+      /* 照片悬停遮罩 */
+      .her-item .photo-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(255, 107, 157, 0);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.4s ease;
+        opacity: 0;
+      }
+
+      .her-item:hover .photo-overlay {
+        background: rgba(255, 107, 157, 0.15);
+        opacity: 1;
+      }
+
+      .her-item .photo-overlay-icon {
+        font-size: 2.5rem;
+        background: white;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        transform: scale(0.8);
+        transition: all 0.3s ease;
+      }
+
+      .her-item:hover .photo-overlay-icon {
+        transform: scale(1);
+      }
+
+      /* 照片信息区 */
+      .her-item .photo-info {
+        padding: 18px 20px;
+        background: white;
+      }
+
+      .her-item .photo-title {
+        font-size: 1.05rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 6px;
+      }
+
+      .her-item .photo-meta {
+        font-size: 0.85rem;
+        color: #999;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .her-item .photo-desc {
+        font-size: 0.9rem;
+        color: #666;
+        margin-top: 8px;
+        line-height: 1.5;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      /* 空状态 */
+      .her-empty {
+        text-align: center;
+        padding: 80px 20px;
+        color: #999;
+      }
+
+      .her-empty-icon {
+        font-size: 5rem;
+        margin-bottom: 20px;
+        animation: floatSoft 3s ease-in-out infinite;
+      }
+
+      /* 灯箱（复用相册样式但覆盖） */
+      .her-lightbox {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.92);
+        z-index: 10000;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        animation: fadeIn 0.3s ease;
+      }
+
+      .her-lightbox.active {
+        display: flex;
+      }
+
+      .her-lightbox-content {
+        max-width: 90vw;
+        max-height: 85vh;
+        position: relative;
+      }
+
+      .her-lightbox-content img {
+        max-width: 100%;
+        max-height: 85vh;
+        border-radius: 12px;
+        box-shadow: 0 10px 60px rgba(0, 0, 0, 0.5);
+        object-fit: contain;
+      }
+
+      .her-lightbox-info {
+        background: white;
+        padding: 20px 25px;
+        border-radius: 0 0 12px 12px;
+        max-width: 800px;
+        margin: 0 auto;
+        text-align: center;
+      }
+
+      .her-lightbox-title {
+        font-size: 1.2rem;
+        color: #333;
+        margin-bottom: 6px;
+      }
+
+      .her-lightbox-desc {
+        color: #666;
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+
+      .her-lightbox-close {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        font-size: 1.4rem;
+        cursor: pointer;
+        box-shadow: 0 3px 15px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+        z-index: 10;
+      }
+
+      .her-lightbox-close:hover {
+        transform: rotate(90deg);
+        background: #ff6b9d;
+        color: white;
+      }
+
+      .her-lightbox-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        font-size: 1.4rem;
+        cursor: pointer;
+        box-shadow: 0 3px 15px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+        z-index: 10;
+      }
+
+      .her-lightbox-nav:hover {
+        background: #ff6b9d;
+        color: white;
+      }
+
+      .her-lightbox-prev { left: 15px; }
+      .her-lightbox-next { right: 15px; }
+
+      /* 照片数量标签 */
+      .her-count {
+        text-align: center;
+        color: #999;
+        font-size: 0.95rem;
+        margin-bottom: 20px;
+      }
+
+      .her-count span {
+        color: #ff6b9d;
+        font-weight: bold;
+      }
+
+      /* 响应式 */
+      @media (max-width: 768px) {
+        .her-hero { padding: 30px 15px; }
+        .her-name { font-size: 2.5rem; letter-spacing: 4px; }
+        .her-quote { padding: 20px 25px; margin: 20px auto 30px; }
+        .her-quote-text { font-size: 1rem; }
+        .her-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 15px; }
+        .her-item .photo-wrapper { height: 250px; }
+        .her-lightbox-nav { width: 38px; height: 38px; font-size: 1.1rem; }
+        .her-lightbox-prev { left: 8px; }
+        .her-lightbox-next { right: 8px; }
+      }
+    </style>
+
+    <!-- 她的名字大标题 -->
+    <div class="her-hero">
+      <div class="her-name" id="herName">周夕茹</div>
+      <div class="her-subtitle">
+        <span class="heart-icon">💖</span>
+        <span id="herNickname">宝贝</span>
+        <span class="heart-icon">💖</span>
+      </div>
+    </div>
+
+    <!-- 爱情寄语 -->
+    <div class="her-quote reveal" id="herQuoteSection">
+      <p class="her-quote-text" id="herQuoteText">你是我见过最美的风景，每一天都比前一天更爱你 💕</p>
+      <p class="her-quote-author">—— 爱你的我</p>
+    </div>
+
+    <!-- 照片墙标题 -->
+    <div class="her-gallery-title reveal">
+      <h2>
+        <span>🌸</span>
+        <span>宝贝的美照</span>
+        <span>🌸</span>
+      </h2>
+      <p>每一张都是我心动的瞬间</p>
+    </div>
+
+    <!-- 照片计数 -->
+    <div class="her-count">
+      共 <span id="herPhotoCount">0</span> 张美照
+    </div>
+
+    <!-- 照片网格 -->
+    <div class="her-grid" id="herGrid">
+      <!-- 由 JS 动态生成 -->
+    </div>
+
+    <!-- 灯箱 -->
+    <div class="her-lightbox" id="herLightbox">
+      <button class="her-lightbox-close" id="herLightboxClose">×</button>
+      <button class="her-lightbox-nav her-lightbox-prev" id="herLightboxPrev">‹</button>
+      <button class="her-lightbox-nav her-lightbox-next" id="herLightboxNext">›</button>
+      <div class="her-lightbox-content">
+        <img id="herLightboxImg" src="" alt="">
+        <div class="her-lightbox-info">
+          <h3 class="her-lightbox-title" id="herLightboxTitle"></h3>
+          <p class="her-lightbox-desc" id="herLightboxDesc"></p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 页脚 -->
+  <footer class="footer">
+    <p>用爱记录每一个美好瞬间</p>
+    <div class="hearts">💕 💖 💗</div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script src="js/her.js"></script>
+</body>
+</html>

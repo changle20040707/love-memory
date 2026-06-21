@@ -5,6 +5,7 @@
 let memorialDays = [];
 let nextMemorial = null;
 let countdownInterval = null;
+window.countdownInterval = null;
 
 // 初始化纪念日页面（兼容直接加载和 SPA 路由切换）
 document.addEventListener('DOMContentLoaded', function() {
@@ -12,6 +13,8 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function initCountdown() {
+  // 确认当前是纪念日页面
+  if (!document.getElementById('countdownDisplay')) return;
   // 等待配置加载
   if (!window.app || !window.app.config) {
     setTimeout(initCountdown, 100);
@@ -78,6 +81,8 @@ function startCountdown() {
 
   updateCountdown();
   countdownInterval = setInterval(updateCountdown, 1000);
+  // 暴露到全局供 SPA 路由清理
+  window.countdownInterval = countdownInterval;
 }
 
 // 更新倒计时
@@ -126,7 +131,7 @@ function renderMemorialCards() {
     const isSoon = diffDays <= 30;
 
     return `
-      <div class="memorial-card fade-in">
+      <div class="memorial-card fade-in reveal tilt-card">
         <div class="memorial-card-header">
           <span class="memorial-card-name">${memorial.name}</span>
           <span class="memorial-card-badge ${isSoon ? 'soon' : ''}">

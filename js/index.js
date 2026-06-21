@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function initIndex() {
+  // 确认当前是首页
+  if (!document.getElementById('loveDays')) return;
   // 等待配置加载
   if (!window.app || !window.app.config) {
     setTimeout(initIndex, 100);

@@ -23,6 +23,12 @@ async function initApp() {
     // 更新页面标题
     updateSiteTitle();
 
+    // 初始化视觉增强功能
+    initScrollReveal();
+    initTiltEffect();
+    initBackToTop();
+    initFloatingDecorations();
+
     console.log('💕 网站初始化完成');
   } catch (error) {
     console.error('初始化失败:', error);
@@ -73,11 +79,26 @@ function initMusicPlayer() {
   audio.volume = 0.4;
   audio.preload = 'auto';
 
+  // 尝试从 sessionStorage 恢复音乐状态（全页跳转后保持连续）
+  try {
+    const savedState = sessionStorage.getItem('loveMusicState');
+    if (savedState) {
+      const state = JSON.parse(savedState);
+      currentIndex = state.currentIndex || 0;
+      audio.volume = state.volume || 0.4;
+      audio.currentTime = state.currentTime || 0;
+      sessionStorage.removeItem('loveMusicState');
+    }
+  } catch (e) { /* 忽略 */ }
+
   // 加载当前歌曲
   function loadTrack(index) {
     const track = playlist[index];
     audio.src = track.file;
     audio.load();
+    currentIndex = index;
+    // 更新全局对象中的索引
+    if (window.audioPlayer) window.audioPlayer.currentIndex = index;
     // 更新显示的歌名
     const titleEl = document.querySelector('.music-title');
     if (titleEl) titleEl.textContent = `🎵 ${track.name}`;
@@ -100,6 +121,21 @@ function initMusicPlayer() {
       audio.play().catch(() => {});
     }
   }
+
+  // 保存音乐状态到 sessionStorage（供全页跳转后恢复）
+  function saveMusicState() {
+    try {
+      sessionStorage.setItem('loveMusicState', JSON.stringify({
+        currentIndex: currentIndex,
+        currentTime: audio.currentTime,
+        volume: audio.volume,
+        isPlaying: isPlaying
+      }));
+    } catch (e) { /* 忽略 */ }
+  }
+
+  // 页面跳转前保存状态
+  window.addEventListener('beforeunload', saveMusicState);
 
   // 歌曲结束时自动下一首
   audio.addEventListener('ended', () => {
@@ -209,17 +245,34 @@ function initMusicPlayer() {
     musicTitle.textContent = '⚠️ 加载失败';
   });
 
-  // 自动尝试播放
-  setTimeout(() => {
-    const playPromise = audio.play();
-    if (playPromise !== undefined) {
-      playPromise.then(() => {
-        player.classList.add('playing');
-        musicIcon.textContent = '🎶';
-        isPlaying = true;
-      }).catch(() => {});
-    }
-  }, 1000);
+  // 尝试自动播放（新加载时播放，或从 sessionStorage 恢复后继续播放）
+  function tryAutoPlay() {
+    let shouldTry = true;
+
+    // 检查是否有保存的播放状态
+    try {
+      const savedState = sessionStorage.getItem('loveMusicState');
+      if (savedState) {
+        const state = JSON.parse(savedState);
+        if (state.isPlaying) shouldTry = true;
+      }
+    } catch (e) {}
+
+    if (!shouldTry) return;
+
+    setTimeout(() => {
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          player.classList.add('playing');
+          musicIcon.textContent = '🎶';
+          isPlaying = true;
+        }).catch(() => {});
+      }
+    }, 1200);
+  }
+
+  tryAutoPlay();
 
   // 用户点击页面时自动播放
   document.addEventListener('click', function autoPlayHandler() {
@@ -236,8 +289,8 @@ function initMusicPlayer() {
     document.removeEventListener('click', autoPlayHandler);
   }, { once: true });
 
-  // 存储到全局
-  window.audioPlayer = { audio, player, isPlaying, togglePlay, nextTrack, prevTrack };
+  // 存储到全局（含 currentIndex 供页面跳转时保存状态）
+  window.audioPlayer = { audio, player, isPlaying, currentIndex, togglePlay, nextTrack, prevTrack };
 }
 
 // 初始化爱心飘落效果
@@ -289,6 +342,86 @@ function highlightCurrentNav() {
       link.classList.add('active');
     }
   });
+}
+
+// ============================================
+// 视觉增强特效
+// ============================================
+
+// 1. 滚动触发动画 - 元素进入视野时淡入
+function initScrollReveal() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+
+  // 观察所有 .reveal 元素
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+}
+
+// 2. 3D 卡片倾斜效果
+function initTiltEffect() {
+  document.querySelectorAll('.tilt-card').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      card.style.transform = `perspective(1000px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg) translateZ(10px)`;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = 'perspective(1000px) rotateY(0) rotateX(0) translateZ(0)';
+      card.style.transition = 'transform 0.5s ease';
+      setTimeout(() => { card.style.transition = ''; }, 500);
+    });
+  });
+}
+
+// 3. 返回顶部按钮
+function initBackToTop() {
+  const btn = document.createElement('div');
+  btn.className = 'back-to-top';
+  btn.innerHTML = '⬆';
+  btn.title = '返回顶部';
+  document.body.appendChild(btn);
+
+  // 显示/隐藏按钮
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 400) {
+      btn.classList.add('visible');
+    } else {
+      btn.classList.remove('visible');
+    }
+  });
+
+  // 点击回到顶部
+  btn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+}
+
+// 4. 浮动装饰元素
+function initFloatingDecorations() {
+  const icons = ['💕', '✨', '🌸', '💗', '⭐', '💖'];
+  const container = document.createElement('div');
+  container.className = 'floating-decorations';
+  document.body.appendChild(container);
+
+  // 创建 6 个浮动元素
+  for (let i = 0; i < 6; i++) {
+    const el = document.createElement('span');
+    el.textContent = icons[i % icons.length];
+    el.className = 'float-item';
+    el.style.left = `${8 + Math.random() * 84}%`;
+    el.style.animationDelay = `${Math.random() * 8}s`;
+    el.style.animationDuration = `${8 + Math.random() * 6}s`;
+    el.style.fontSize = `${1 + Math.random() * 0.8}rem`;
+    el.style.opacity = `${0.15 + Math.random() * 0.15}`;
+    container.appendChild(el);
+  }
 }
 
 // 更新网站标题
@@ -433,124 +566,35 @@ function throttle(func, limit) {
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', function() {
   initApp();
-  initRouter();
+
+  // 从 sessionStorage 恢复后，重新初始化视觉特效
+  setTimeout(() => {
+    initScrollReveal();
+    initTiltEffect();
+    initBackToTop();
+  }, 500);
 });
 
-// ============================================
-// SPA 路由 - 页面切换时保持音乐持续播放
-// ============================================
+// 为所有内部链接添加音乐状态保存（页面跳转前保存播放进度）
+document.addEventListener('click', function(e) {
+  const link = e.target.closest('a[href]');
+  if (!link) return;
+  const href = link.getAttribute('href');
+  if (!href || !href.endsWith('.html') || href.startsWith('http') || href.startsWith('https')) return;
 
-// 页面初始化映射
-const PAGE_INIT = {
-  'index.html':    { fn: 'initIndex' },
-  'album.html':    { fn: 'initAlbum' },
-  'countdown.html': { fn: 'initCountdown' },
-  'message.html':  { fn: 'initMessage' },
-};
-
-// 当前页面
-let currentPage = 'index.html';
-
-// 初始化 SPA 路由
-function initRouter() {
-  // 监听所有导航点击
-  document.addEventListener('click', async (e) => {
-    const link = e.target.closest('a[href]');
-    if (!link) return;
-
-    const href = link.getAttribute('href');
-    // 只拦截 .html 的内部链接
-    if (!href || !href.endsWith('.html') || href.startsWith('http') || href.startsWith('https')) return;
-
-    e.preventDefault();
-    await navigateTo(href);
-  });
-
-  // 监听浏览器前进/后退
-  window.addEventListener('popstate', (e) => {
-    if (e.state && e.state.page) {
-      navigateTo(e.state.page, true);
-    }
-  });
-
-  // 记录初始页面
-  const path = window.location.pathname.split('/').pop() || 'index.html';
-  currentPage = path;
-  history.replaceState({ page: currentPage }, '', currentPage);
-}
-
-// 切换到目标页面
-async function navigateTo(page, isPopState = false) {
-  if (page === currentPage) return;
-
-  try {
-    // 1. 获取目标页面 HTML
-    const response = await fetch(page);
-    if (!response.ok) throw new Error(`加载失败: ${response.status}`);
-    const html = await response.text();
-
-    // 2. 用 DOMParser 解析 HTML
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-
-    // 3. 提取 <main> 内容（包含页面专属样式）
-    const newMain = doc.querySelector('main.main-content');
-    if (!newMain) throw new Error('未找到主内容区域');
-
-    // 4. 替换当前页面内容
-    const currentMain = document.querySelector('main.main-content');
-    currentMain.innerHTML = newMain.innerHTML;
-
-    // 5. 更新页面标题
-    document.title = doc.title;
-
-    // 6. 更新浏览器历史记录
-    if (!isPopState) {
-      history.pushState({ page }, '', page);
-    }
-    currentPage = page;
-
-    // 7. 更新导航高亮
-    updateActiveNav(page);
-
-    // 8. 重新初始化页面功能
-    const pageConfig = PAGE_INIT[page];
-    if (pageConfig) {
-      // 等待 DOM 更新完成
-      await new Promise(resolve => setTimeout(resolve, 50));
-      const fn = window[pageConfig.fn];
-      if (typeof fn === 'function') {
-        fn();
-      }
-    }
-
-    // 9. 重新触发淡入动画
-    document.querySelectorAll('.fade-in').forEach((el, i) => {
-      el.style.animation = 'none';
-      el.offsetHeight; // 触发回流
-      el.style.animation = `fadeIn 0.6s ease-out ${i * 0.1}s forwards`;
-      el.style.opacity = '0';
-    });
-
-  } catch (error) {
-    console.error('页面切换失败:', error);
-    // 如果 SPA 切换失败，回退到直接跳转
-    window.location.href = page;
+  // 保存音乐状态到 sessionStorage
+  const audioPlayer = window.audioPlayer;
+  if (audioPlayer && audioPlayer.audio) {
+    try {
+      sessionStorage.setItem('loveMusicState', JSON.stringify({
+        currentIndex: audioPlayer.currentIndex || 0,
+        currentTime: audioPlayer.audio.currentTime || 0,
+        volume: audioPlayer.audio.volume || 0.4,
+        isPlaying: audioPlayer.isPlaying || false
+      }));
+    } catch (err) { /* 忽略 */ }
   }
-}
-
-// 更新导航高亮
-function updateActiveNav(page) {
-  const links = document.querySelectorAll('.nav-links a');
-  links.forEach(link => {
-    const href = link.getAttribute('href');
-    if (href === page) {
-      link.classList.add('active');
-    } else {
-      link.classList.remove('active');
-    }
-  });
-}
+}, true);
 
 // 导出到全局
 window.app = {
@@ -565,5 +609,6 @@ window.app = {
   hideLoading,
   debounce,
   throttle,
-  get config() { return CONFIG; }
+  get config() { return CONFIG; },
+  _setConfig(data) { CONFIG = data; }
 };
