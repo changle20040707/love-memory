@@ -1,36 +1,120 @@
 /**
  * 留言板功能 - 恋爱纪念网站
+ * 使用 Supabase 云数据库存储留言，实现多人共享
  */
 
+// ==============================
+// ！！！重要：请先配置 Supabase ！！！
+// 按照下方步骤注册 Supabase 并获取你的项目 URL 和 anon 密钥
+// 教程：https://supabase.com/dashboard 注册 -> 创建项目 -> 复制 URL 和 anon key
+// ==============================
+
+// TODO: 替换为你的 Supabase 项目信息
+const SUPABASE_URL = 'https://ptcuhrkxkkmmlcqszksm.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0Y3Vocmt4a2ttbWxjcXN6a3NtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIwMTQ3NTYsImV4cCI6MjA5NzU5MDc1Nn0.MkOnPz_ZEGPf7lj5l9fiJ1MK6MnPKokLF6Y4mtbUQJs';
+
+// ==============================
+
+const SUPABASE_API = `${SUPABASE_URL}/rest/v1`;
+const SUPABASE_HEADERS = {
+  'apikey': SUPABASE_ANON_KEY,
+  'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+  'Content-Type': 'application/json',
+  'Prefer': 'return=representation'
+};
+
 let messages = [];
-const STORAGE_KEY = 'love_memory_messages';
 
 // 初始化留言板
 document.addEventListener('DOMContentLoaded', function() {
   loadMessages();
-  renderMessages();
   initFormHandlers();
   initEmojiBar();
 });
 
-// 从 localStorage 加载留言
-function loadMessages() {
+// 从 Supabase 加载留言
+async function loadMessages() {
+  // 显示加载中状态
+  const list = document.getElementById('messagesList');
+  list.innerHTML = `
+    <div class="no-messages fade-in" style="padding: 40px;">
+      <div style="font-size: 2rem; margin-bottom: 15px;">⏳</div>
+      <p style="color: #999;">正在加载留言...</p>
+    </div>
+  `;
+
   try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    messages = stored ? JSON.parse(stored) : [];
+    const response = await fetch(
+      `${SUPABASE_API}/messages?select=*&order=created_at.desc`,
+      { headers: SUPABASE_HEADERS }
+    );
+
+    if (!response.ok) {
+      throw new Error(`加载失败 (${response.status})`);
+    }
+
+    messages = await response.json();
+    renderMessages();
   } catch (error) {
     console.error('加载留言失败:', error);
     messages = [];
+    renderMessages();
   }
 }
 
-// 保存留言到 localStorage
-function saveMessages() {
+// 保存留言到 Supabase
+async function saveMessage(message) {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+    const response = await fetch(
+      `${SUPABASE_API}/messages`,
+      {
+        method: 'POST',
+        headers: SUPABASE_HEADERS,
+        body: JSON.stringify({
+          author: message.author,
+          content: message.content
+        })
+      }
+    );
+
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`保存失败 (${response.status}): ${errText}`);
+    }
+
+    // 返回新创建的留言对象（数组）
+    return await response.json();
   } catch (error) {
     console.error('保存留言失败:', error);
-    alert('保存失败，请检查浏览器存储空间');
+    alert('保存失败，请检查网络连接后重试');
+    return null;
+  }
+}
+
+// 从 Supabase 删除留言
+async function deleteMessageFromServer(id) {
+  try {
+    const response = await fetch(
+      `${SUPABASE_API}/messages?id=eq.${id}`,
+      {
+        method: 'DELETE',
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`删除失败 (${response.status})`);
+    }
+
+    return true;
+  } catch (error) {
+    console.error('删除留言失败:', error);
+    alert('删除失败，请检查网络连接');
+    return false;
   }
 }
 
@@ -38,8 +122,9 @@ function saveMessages() {
 function initFormHandlers() {
   const form = document.getElementById('messageForm');
   const textarea = document.getElementById('messageTextarea');
+  const submitBtn = form.querySelector('.submit-btn');
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const author = document.getElementById('authorInput').value.trim();
@@ -50,29 +135,38 @@ function initFormHandlers() {
       return;
     }
 
-    // 创建新留言
-    const newMessage = {
-      id: Date.now(),
-      author: author,
-      content: content,
-      timestamp: new Date().toISOString()
-    };
+    // 禁用提交按钮，防止重复提交
+    submitBtn.disabled = true;
+    submitBtn.textContent = '发送中... 💕';
 
-    // 添加到留言列表
-    messages.unshift(newMessage);
-    saveMessages();
-    renderMessages();
+    try {
+      // 先保存到服务器
+      const savedMessages = await saveMessage({ author, content });
 
-    // 清空表单
-    form.reset();
+      if (savedMessages && savedMessages.length > 0) {
+        // 保存成功后重新从服务器加载最新留言列表
+        await loadMessages();
 
-    // 滚动到新留言
-    setTimeout(() => {
-      const firstMessage = document.querySelector('.message-card');
-      if (firstMessage) {
-        firstMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // 清空表单
+        form.reset();
+
+        // 滚动到顶部查看新留言
+        const firstCard = document.querySelector('.message-card');
+        if (firstCard) {
+          firstCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      } else {
+        // 如果保存失败但没抛异常，尝试从本地重新加载
+        await loadMessages();
       }
-    }, 100);
+    } catch (error) {
+      console.error('提交留言失败:', error);
+      alert('提交失败，请稍后重试');
+    } finally {
+      // 恢复提交按钮
+      submitBtn.disabled = false;
+      submitBtn.textContent = '发送留言 💕';
+    }
   });
 }
 
@@ -128,22 +222,24 @@ function renderMessages() {
           <span>💝</span>
           <span>${escapeHtml(msg.author)}</span>
         </div>
-        <div class="message-time">${formatTime(msg.timestamp)}</div>
+        <div class="message-time">${formatTime(msg.created_at)}</div>
       </div>
       <div class="message-content">${escapeHtml(msg.content)}</div>
     </div>
   `).join('');
 }
 
-// 删除留言
-function deleteMessage(id) {
+// 删除留言（全局函数，供 onclick 调用）
+async function deleteMessage(id) {
   if (!confirm('确定要删除这条留言吗？')) {
     return;
   }
 
-  messages = messages.filter(msg => msg.id !== id);
-  saveMessages();
-  renderMessages();
+  const success = await deleteMessageFromServer(id);
+  if (success) {
+    messages = messages.filter(msg => msg.id !== id);
+    renderMessages();
+  }
 }
 
 // 格式化时间
