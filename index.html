@@ -6,181 +6,6 @@
   <title>我们的爱情故事</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/animations.css">
-  <style>
-    /* 首页特定样式 */
-    .hero-section {
-      text-align: center;
-      padding: 60px 20px;
-      min-height: calc(100vh - 200px);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .couple-names {
-      font-size: 2.5rem;
-      margin-bottom: 30px;
-      animation: fadeIn 1s ease-out;
-    }
-
-    .couple-names .name {
-      background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      font-weight: bold;
-    }
-
-    .couple-names .heart {
-      display: inline-block;
-      margin: 0 15px;
-      animation: heartbeat 1.5s ease-in-out infinite;
-      color: #ff6b9d;
-    }
-
-    .love-counter {
-      background: white;
-      border-radius: 20px;
-      padding: 40px 60px;
-      box-shadow: 0 10px 40px rgba(255, 107, 157, 0.2);
-      margin-bottom: 40px;
-      animation: scaleIn 0.8s ease-out;
-    }
-
-    .counter-title {
-      font-size: 1.2rem;
-      color: #666;
-      margin-bottom: 15px;
-    }
-
-    .counter-number {
-      font-size: 5rem;
-      font-weight: bold;
-      background: linear-gradient(135deg, #ff6b9d 0%, #e91e63 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      line-height: 1;
-    }
-
-    .counter-unit {
-      font-size: 2rem;
-      color: #ff6b9d;
-      margin-top: 10px;
-    }
-
-    .anniversary-date {
-      margin-top: 20px;
-      padding: 15px 30px;
-      background: #ffe5ec;
-      border-radius: 25px;
-      display: inline-block;
-      color: #ff6b9d;
-      font-weight: 500;
-    }
-
-    .story-section {
-      max-width: 800px;
-      margin: 40px auto;
-      text-align: center;
-    }
-
-    .story-card {
-      background: white;
-      padding: 40px;
-      border-radius: 20px;
-      box-shadow: 0 10px 40px rgba(255, 107, 157, 0.15);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .story-card::before {
-      content: '"';
-      position: absolute;
-      top: -20px;
-      left: 20px;
-      font-size: 8rem;
-      color: #ffe5ec;
-      font-family: Georgia, serif;
-      line-height: 1;
-    }
-
-    .story-text {
-      font-size: 1.3rem;
-      color: #666;
-      line-height: 2;
-      position: relative;
-      z-index: 1;
-    }
-
-    .quick-links {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
-      margin-top: 40px;
-      max-width: 900px;
-    }
-
-    .quick-link {
-      background: white;
-      padding: 30px;
-      border-radius: 15px;
-      text-align: center;
-      text-decoration: none;
-      color: inherit;
-      box-shadow: 0 5px 20px rgba(255, 107, 157, 0.15);
-      transition: all 0.3s ease;
-    }
-
-    .quick-link:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 30px rgba(255, 107, 157, 0.25);
-    }
-
-    .quick-link-icon {
-      font-size: 2.5rem;
-      margin-bottom: 15px;
-    }
-
-    .quick-link-title {
-      font-size: 1.1rem;
-      font-weight: 500;
-      color: #333;
-    }
-
-    .quick-link-desc {
-      font-size: 0.9rem;
-      color: #999;
-      margin-top: 8px;
-    }
-
-    @media (max-width: 768px) {
-      .couple-names {
-        font-size: 1.8rem;
-      }
-
-      .love-counter {
-        padding: 30px 40px;
-      }
-
-      .counter-number {
-        font-size: 3.5rem;
-      }
-
-      .counter-unit {
-        font-size: 1.5rem;
-      }
-
-      .story-card {
-        padding: 25px;
-      }
-
-      .story-text {
-        font-size: 1.1rem;
-      }
-    }
-  </style>
 </head>
 <body>
   <!-- 导航栏 -->
@@ -201,6 +26,181 @@
 
   <!-- 主内容 -->
   <main class="main-content">
+    <style>
+      /* 首页特定样式 */
+      .hero-section {
+        text-align: center;
+        padding: 60px 20px;
+        min-height: calc(100vh - 200px);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .couple-names {
+        font-size: 2.5rem;
+        margin-bottom: 30px;
+        animation: fadeIn 1s ease-out;
+      }
+
+      .couple-names .name {
+        background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: bold;
+      }
+
+      .couple-names .heart {
+        display: inline-block;
+        margin: 0 15px;
+        animation: heartbeat 1.5s ease-in-out infinite;
+        color: #ff6b9d;
+      }
+
+      .love-counter {
+        background: white;
+        border-radius: 20px;
+        padding: 40px 60px;
+        box-shadow: 0 10px 40px rgba(255, 107, 157, 0.2);
+        margin-bottom: 40px;
+        animation: scaleIn 0.8s ease-out;
+      }
+
+      .counter-title {
+        font-size: 1.2rem;
+        color: #666;
+        margin-bottom: 15px;
+      }
+
+      .counter-number {
+        font-size: 5rem;
+        font-weight: bold;
+        background: linear-gradient(135deg, #ff6b9d 0%, #e91e63 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        line-height: 1;
+      }
+
+      .counter-unit {
+        font-size: 2rem;
+        color: #ff6b9d;
+        margin-top: 10px;
+      }
+
+      .anniversary-date {
+        margin-top: 20px;
+        padding: 15px 30px;
+        background: #ffe5ec;
+        border-radius: 25px;
+        display: inline-block;
+        color: #ff6b9d;
+        font-weight: 500;
+      }
+
+      .story-section {
+        max-width: 800px;
+        margin: 40px auto;
+        text-align: center;
+      }
+
+      .story-card {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(255, 107, 157, 0.15);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .story-card::before {
+        content: '"';
+        position: absolute;
+        top: -20px;
+        left: 20px;
+        font-size: 8rem;
+        color: #ffe5ec;
+        font-family: Georgia, serif;
+        line-height: 1;
+      }
+
+      .story-text {
+        font-size: 1.3rem;
+        color: #666;
+        line-height: 2;
+        position: relative;
+        z-index: 1;
+      }
+
+      .quick-links {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-top: 40px;
+        max-width: 900px;
+      }
+
+      .quick-link {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        text-align: center;
+        text-decoration: none;
+        color: inherit;
+        box-shadow: 0 5px 20px rgba(255, 107, 157, 0.15);
+        transition: all 0.3s ease;
+      }
+
+      .quick-link:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(255, 107, 157, 0.25);
+      }
+
+      .quick-link-icon {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+      }
+
+      .quick-link-title {
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: #333;
+      }
+
+      .quick-link-desc {
+        font-size: 0.9rem;
+        color: #999;
+        margin-top: 8px;
+      }
+
+      @media (max-width: 768px) {
+        .couple-names {
+          font-size: 1.8rem;
+        }
+
+        .love-counter {
+          padding: 30px 40px;
+        }
+
+        .counter-number {
+          font-size: 3.5rem;
+        }
+
+        .counter-unit {
+          font-size: 1.5rem;
+        }
+
+        .story-card {
+          padding: 25px;
+        }
+
+        .story-text {
+          font-size: 1.1rem;
+        }
+      }
+    </style>
     <section class="hero-section">
       <!-- 情侣名字 -->
       <div class="couple-names fade-in">
@@ -256,65 +256,9 @@
   </footer>
 
   <script src="js/main.js"></script>
-  <script>
-    // 首页特定逻辑
-    document.addEventListener('DOMContentLoaded', async function() {
-      // 等待配置加载
-      setTimeout(() => {
-        if (window.app && window.app.config) {
-          updateHomePage();
-        } else {
-          // 如果配置还未加载，监听加载完成
-          const checkConfig = setInterval(() => {
-            if (window.app && window.app.config) {
-              clearInterval(checkConfig);
-              updateHomePage();
-            }
-          }, 100);
-        }
-      }, 100);
-    });
-
-    function updateHomePage() {
-      const config = window.app.config;
-
-      // 更新情侣名字
-      document.getElementById('name1').textContent = config.couple.name1;
-      document.getElementById('name2').textContent = config.couple.name2;
-
-      // 计算并更新恋爱天数
-      const loveDays = window.app.calculateLoveDays(config.couple.anniversary);
-      animateNumber('loveDays', loveDays);
-
-      // 更新纪念日日期
-      const formattedDate = window.app.formatDate(config.couple.anniversary);
-      document.getElementById('anniversaryDate').textContent = `从 ${formattedDate} 开始`;
-
-      // 更新爱情宣言
-      if (config.couple.story) {
-        document.getElementById('storyText').textContent = config.couple.story;
-      }
-    }
-
-    // 数字动画效果
-    function animateNumber(elementId, targetNumber) {
-      const element = document.getElementById(elementId);
-      const duration = 2000; // 动画持续时间
-      const steps = 60; // 动画步数
-      const stepTime = duration / steps;
-      const stepValue = targetNumber / steps;
-      let current = 0;
-
-      const timer = setInterval(() => {
-        current += stepValue;
-        if (current >= targetNumber) {
-          element.textContent = targetNumber;
-          clearInterval(timer);
-        } else {
-          element.textContent = Math.floor(current);
-        }
-      }, stepTime);
-    }
-  </script>
+  <script src="js/index.js"></script>
+  <script src="js/album.js"></script>
+  <script src="js/countdown.js"></script>
+  <script src="js/message.js"></script>
 </body>
 </html>

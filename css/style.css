@@ -180,35 +180,216 @@ body {
   position: fixed;
   bottom: 30px;
   right: 30px;
-  background: var(--white);
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
+  z-index: 999;
   display: flex;
   align-items: center;
-  justify-content: center;
-  box-shadow: var(--shadow);
+  gap: 0;
   cursor: pointer;
-  z-index: 999;
   transition: var(--transition);
 }
 
-.music-player:hover {
-  transform: scale(1.1);
-  box-shadow: var(--shadow-hover);
+/* 主播放按钮 */
+.music-btn {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff6b9d 0%, #e91e63 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(255, 107, 157, 0.4);
+  transition: var(--transition);
+  position: relative;
+  flex-shrink: 0;
+  border: 3px solid rgba(255, 255, 255, 0.3);
 }
 
-.music-player.playing {
-  animation: pulse 1s infinite;
+.music-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 30px rgba(255, 107, 157, 0.5);
+}
+
+.music-btn:active {
+  transform: scale(0.95);
 }
 
 .music-icon {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
+  line-height: 1;
 }
 
-@keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
+/* 播放时音符旋转动画 */
+.music-player.playing .music-icon {
+  animation: spinNote 3s linear infinite;
+}
+
+@keyframes spinNote {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(10deg); }
+  75% { transform: rotate(-10deg); }
+  100% { transform: rotate(0deg); }
+}
+
+/* 脉冲光晕效果 */
+.music-player.playing .music-btn::after {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff6b9d, #e91e63);
+  z-index: -1;
+  animation: glowPulse 1.5s ease-in-out infinite;
+  opacity: 0.5;
+}
+
+@keyframes glowPulse {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.15); opacity: 0.2; }
+}
+
+/* 音乐信息面板（默认收起） */
+.music-info {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 8px 18px 8px 15px;
+  border-radius: 25px;
+  box-shadow: 0 4px 15px rgba(255, 107, 157, 0.15);
+  margin-right: -20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  opacity: 0;
+  transform: translateX(20px) scale(0.9);
+  pointer-events: none;
+  transition: all 0.3s ease;
+  height: 44px;
+  border: 1px solid rgba(255, 107, 157, 0.1);
+}
+
+/* 悬停时展开信息面板 */
+.music-player:hover .music-info {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+  pointer-events: auto;
+}
+
+.music-title {
+  font-size: 0.8rem;
+  color: #666;
+  white-space: nowrap;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
+
+/* 音量控制 */
+.volume-control {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-left: 1px solid #eee;
+  padding-left: 12px;
+}
+
+.volume-icon {
+  font-size: 0.85rem;
+  color: #999;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.volume-icon:hover {
+  color: #ff6b9d;
+}
+
+.volume-slider {
+  width: 60px;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: #ffe5ec;
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff6b9d, #e91e63);
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(255, 107, 157, 0.3);
+  transition: var(--transition);
+}
+
+.volume-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.volume-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff6b9d, #e91e63);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 6px rgba(255, 107, 157, 0.3);
+}
+
+/* 切歌按钮 */
+.skip-btn {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 50%;
+  transition: var(--transition);
+  line-height: 1;
+  opacity: 0.6;
+}
+
+.skip-btn:hover {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+.skip-btn:active {
+  transform: scale(0.9);
+}
+
+/* 手机端 - 简化显示 */
+@media (max-width: 768px) {
+  .music-player {
+    bottom: 20px;
+    right: 20px;
+  }
+
+  .music-btn {
+    width: 50px;
+    height: 50px;
+  }
+
+  .music-icon {
+    font-size: 1.3rem;
+  }
+
+  .music-info {
+    padding: 6px 14px 6px 12px;
+    height: 40px;
+  }
+
+  .music-title {
+    max-width: 80px;
+    font-size: 0.75rem;
+  }
+
+  .volume-slider {
+    width: 40px;
+  }
 }
 
 /* 页脚 */

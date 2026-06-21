@@ -6,249 +6,6 @@
   <title>留言板 - 我们的爱情故事</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/animations.css">
-  <style>
-    /* 留言板页面特定样式 */
-    .message-container {
-      max-width: 800px;
-      margin: 0 auto;
-    }
-
-    .message-input-section {
-      background: white;
-      border-radius: 20px;
-      padding: 30px;
-      box-shadow: 0 10px 40px rgba(255, 107, 157, 0.15);
-      margin-bottom: 40px;
-    }
-
-    .input-title {
-      font-size: 1.2rem;
-      color: #ff6b9d;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .message-form {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-
-    .author-input {
-      display: flex;
-      gap: 15px;
-      align-items: center;
-    }
-
-    .author-input label {
-      color: #666;
-      font-size: 0.95rem;
-      white-space: nowrap;
-    }
-
-    .author-input input {
-      flex: 1;
-      padding: 12px 18px;
-      border: 2px solid #ffe5ec;
-      border-radius: 25px;
-      font-size: 1rem;
-      transition: all 0.3s ease;
-      outline: none;
-    }
-
-    .author-input input:focus {
-      border-color: #ff6b9d;
-      box-shadow: 0 0 10px rgba(255, 107, 157, 0.2);
-    }
-
-    .message-textarea {
-      width: 100%;
-      min-height: 120px;
-      padding: 15px 18px;
-      border: 2px solid #ffe5ec;
-      border-radius: 15px;
-      font-size: 1rem;
-      font-family: inherit;
-      resize: vertical;
-      transition: all 0.3s ease;
-      outline: none;
-    }
-
-    .message-textarea:focus {
-      border-color: #ff6b9d;
-      box-shadow: 0 0 10px rgba(255, 107, 157, 0.2);
-    }
-
-    .emoji-bar {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .emoji-btn {
-      font-size: 1.5rem;
-      background: #ffe5ec;
-      border: none;
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .emoji-btn:hover {
-      transform: scale(1.2);
-      background: #ff6b9d;
-    }
-
-    .submit-btn {
-      align-self: flex-end;
-      padding: 12px 40px;
-      background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
-      color: white;
-      border: none;
-      border-radius: 25px;
-      font-size: 1rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 5px 15px rgba(255, 107, 157, 0.3);
-    }
-
-    .submit-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(255, 107, 157, 0.4);
-    }
-
-    .submit-btn:active {
-      transform: translateY(0);
-    }
-
-    .messages-list {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    .message-card {
-      background: white;
-      border-radius: 15px;
-      padding: 25px;
-      box-shadow: 0 5px 20px rgba(255, 107, 157, 0.1);
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .message-card::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 4px;
-      height: 100%;
-      background: linear-gradient(to bottom, #ff6b9d, #ffb3c6);
-    }
-
-    .message-card:hover {
-      transform: translateX(5px);
-      box-shadow: 0 8px 25px rgba(255, 107, 157, 0.2);
-    }
-
-    .message-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-    }
-
-    .message-author {
-      font-weight: 600;
-      color: #ff6b9d;
-      font-size: 1.1rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .message-time {
-      color: #999;
-      font-size: 0.85rem;
-    }
-
-    .message-content {
-      color: #333;
-      line-height: 1.8;
-      font-size: 1rem;
-      word-wrap: break-word;
-    }
-
-    .delete-btn {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      background: #ffe5ec;
-      border: none;
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      cursor: pointer;
-      opacity: 0;
-      transition: all 0.3s ease;
-      font-size: 1rem;
-    }
-
-    .message-card:hover .delete-btn {
-      opacity: 1;
-    }
-
-    .delete-btn:hover {
-      background: #ff6b9d;
-      color: white;
-    }
-
-    .no-messages {
-      text-align: center;
-      padding: 60px;
-      color: #999;
-    }
-
-    .no-messages-icon {
-      font-size: 4rem;
-      margin-bottom: 20px;
-    }
-
-    .message-count {
-      text-align: center;
-      color: #666;
-      margin-bottom: 30px;
-      font-size: 1rem;
-    }
-
-    .message-count span {
-      color: #ff6b9d;
-      font-weight: bold;
-    }
-
-    @media (max-width: 768px) {
-      .author-input {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .message-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-      }
-
-      .delete-btn {
-        opacity: 1;
-      }
-    }
-  </style>
 </head>
 <body>
   <!-- 导航栏 -->
@@ -269,6 +26,249 @@
 
   <!-- 主内容 -->
   <main class="main-content">
+    <style>
+      /* 留言板页面特定样式 */
+      .message-container {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      .message-input-section {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 40px rgba(255, 107, 157, 0.15);
+        margin-bottom: 40px;
+      }
+
+      .input-title {
+        font-size: 1.2rem;
+        color: #ff6b9d;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .message-form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .author-input {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+      }
+
+      .author-input label {
+        color: #666;
+        font-size: 0.95rem;
+        white-space: nowrap;
+      }
+
+      .author-input input {
+        flex: 1;
+        padding: 12px 18px;
+        border: 2px solid #ffe5ec;
+        border-radius: 25px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        outline: none;
+      }
+
+      .author-input input:focus {
+        border-color: #ff6b9d;
+        box-shadow: 0 0 10px rgba(255, 107, 157, 0.2);
+      }
+
+      .message-textarea {
+        width: 100%;
+        min-height: 120px;
+        padding: 15px 18px;
+        border: 2px solid #ffe5ec;
+        border-radius: 15px;
+        font-size: 1rem;
+        font-family: inherit;
+        resize: vertical;
+        transition: all 0.3s ease;
+        outline: none;
+      }
+
+      .message-textarea:focus {
+        border-color: #ff6b9d;
+        box-shadow: 0 0 10px rgba(255, 107, 157, 0.2);
+      }
+
+      .emoji-bar {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .emoji-btn {
+        font-size: 1.5rem;
+        background: #ffe5ec;
+        border: none;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .emoji-btn:hover {
+        transform: scale(1.2);
+        background: #ff6b9d;
+      }
+
+      .submit-btn {
+        align-self: flex-end;
+        padding: 12px 40px;
+        background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
+        color: white;
+        border: none;
+        border-radius: 25px;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(255, 107, 157, 0.3);
+      }
+
+      .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(255, 107, 157, 0.4);
+      }
+
+      .submit-btn:active {
+        transform: translateY(0);
+      }
+
+      .messages-list {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .message-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 5px 20px rgba(255, 107, 157, 0.1);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .message-card::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(to bottom, #ff6b9d, #ffb3c6);
+      }
+
+      .message-card:hover {
+        transform: translateX(5px);
+        box-shadow: 0 8px 25px rgba(255, 107, 157, 0.2);
+      }
+
+      .message-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+
+      .message-author {
+        font-weight: 600;
+        color: #ff6b9d;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .message-time {
+        color: #999;
+        font-size: 0.85rem;
+      }
+
+      .message-content {
+        color: #333;
+        line-height: 1.8;
+        font-size: 1rem;
+        word-wrap: break-word;
+      }
+
+      .delete-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: #ffe5ec;
+        border: none;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        cursor: pointer;
+        opacity: 0;
+        transition: all 0.3s ease;
+        font-size: 1rem;
+      }
+
+      .message-card:hover .delete-btn {
+        opacity: 1;
+      }
+
+      .delete-btn:hover {
+        background: #ff6b9d;
+        color: white;
+      }
+
+      .no-messages {
+        text-align: center;
+        padding: 60px;
+        color: #999;
+      }
+
+      .no-messages-icon {
+        font-size: 4rem;
+        margin-bottom: 20px;
+      }
+
+      .message-count {
+        text-align: center;
+        color: #666;
+        margin-bottom: 30px;
+        font-size: 1rem;
+      }
+
+      .message-count span {
+        color: #ff6b9d;
+        font-weight: bold;
+      }
+
+      @media (max-width: 768px) {
+        .author-input {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .message-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 8px;
+        }
+
+        .delete-btn {
+          opacity: 1;
+        }
+      }
+    </style>
     <div class="page-title fade-in">
       <h1>💌 留言板</h1>
       <p>写下想对TA说的话</p>

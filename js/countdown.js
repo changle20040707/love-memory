@@ -6,18 +6,17 @@ let memorialDays = [];
 let nextMemorial = null;
 let countdownInterval = null;
 
-// 初始化纪念日页面
+// 初始化纪念日页面（兼容直接加载和 SPA 路由切换）
 document.addEventListener('DOMContentLoaded', function() {
-  // 等待配置加载
-  const checkConfig = setInterval(() => {
-    if (window.app && window.app.config) {
-      clearInterval(checkConfig);
-      initCountdown();
-    }
-  }, 100);
+  initCountdown();
 });
 
 function initCountdown() {
+  // 等待配置加载
+  if (!window.app || !window.app.config) {
+    setTimeout(initCountdown, 100);
+    return;
+  }
   const config = window.app.config;
   memorialDays = config.memorialDays || [];
 

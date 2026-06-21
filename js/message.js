@@ -25,12 +25,17 @@ const SUPABASE_HEADERS = {
 
 let messages = [];
 
-// 初始化留言板
+// 初始化留言板（兼容直接加载和 SPA 路由切换）
 document.addEventListener('DOMContentLoaded', function() {
+  initMessage();
+});
+
+// 导出初始化函数，供 SPA 路由切换后调用
+function initMessage() {
   loadMessages();
   initFormHandlers();
   initEmojiBar();
-});
+}
 
 // 从 Supabase 加载留言
 async function loadMessages() {

@@ -59,39 +59,185 @@ function getDefaultConfig() {
 
 // 初始化音乐播放器
 function initMusicPlayer() {
-  const audio = new Audio();
-  audio.src = CONFIG.backgroundMusic || 'music/love-song.mp3';
-  audio.loop = true;
-  audio.volume = 0.5;
-
+  // ===== 播放列表 =====
+  const playlist = [
+    { file: 'music/暖暖_漫漫.m4a', name: '暖暖' },
+    { file: 'music/光_漫漫.m4a', name: '光' },
+    { file: 'music/冬眠_漫漫.m4a', name: '冬眠' },
+    { file: 'music/最后一页_漫漫.m4a', name: '最后一页' },
+  ];
+  let currentIndex = 0;
   let isPlaying = false;
 
-  // 创建音乐播放器按钮
+  const audio = new Audio();
+  audio.volume = 0.4;
+  audio.preload = 'auto';
+
+  // 加载当前歌曲
+  function loadTrack(index) {
+    const track = playlist[index];
+    audio.src = track.file;
+    audio.load();
+    // 更新显示的歌名
+    const titleEl = document.querySelector('.music-title');
+    if (titleEl) titleEl.textContent = `🎵 ${track.name}`;
+  }
+
+  // 播放下一首
+  function nextTrack() {
+    currentIndex = (currentIndex + 1) % playlist.length;
+    loadTrack(currentIndex);
+    if (isPlaying) {
+      audio.play().catch(() => {});
+    }
+  }
+
+  // 播放上一首
+  function prevTrack() {
+    currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
+    loadTrack(currentIndex);
+    if (isPlaying) {
+      audio.play().catch(() => {});
+    }
+  }
+
+  // 歌曲结束时自动下一首
+  audio.addEventListener('ended', () => {
+    nextTrack();
+  });
+
+  // 加载第一首
+  loadTrack(0);
+
+  // 创建播放器 UI
   const player = document.createElement('div');
   player.className = 'music-player';
-  player.innerHTML = '<span class="music-icon">🎵</span>';
-  player.title = '点击播放/暂停音乐';
+  player.innerHTML = `
+    <div class="music-info">
+      <span class="music-title">🎵 ${playlist[0].name}</span>
+      <div class="volume-control">
+        <span class="volume-icon" id="volumeIcon">🔊</span>
+        <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.05" value="0.4">
+      </div>
+      <button class="skip-btn" id="skipBtn" title="下一首">⏭️</button>
+    </div>
+    <div class="music-btn" title="点击播放/暂停背景音乐">
+      <span class="music-icon">🎵</span>
+    </div>
+  `;
   document.body.appendChild(player);
 
-  // 点击事件
-  player.addEventListener('click', () => {
+  // 获取元素
+  const musicBtn = player.querySelector('.music-btn');
+  const musicIcon = player.querySelector('.music-icon');
+  const musicTitle = player.querySelector('.music-title');
+  const volumeSlider = player.querySelector('#volumeSlider');
+  const volumeIcon = player.querySelector('#volumeIcon');
+  const skipBtn = player.querySelector('#skipBtn');
+
+  // 播放/暂停切换
+  musicBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    togglePlay();
+  });
+
+  // 点击信息区域不触发播放切换
+  player.querySelector('.music-info').addEventListener('click', (e) => {
+    e.stopPropagation();
+  });
+
+  // 切歌按钮
+  skipBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    nextTrack();
+  });
+
+  // 双击歌名切上一首
+  musicTitle.addEventListener('dblclick', (e) => {
+    e.stopPropagation();
+    prevTrack();
+  });
+
+  function togglePlay() {
     if (isPlaying) {
       audio.pause();
       player.classList.remove('playing');
-      player.querySelector('.music-icon').textContent = '🎵';
+      musicIcon.textContent = '🎵';
     } else {
-      audio.play().then(() => {
-        player.classList.add('playing');
-        player.querySelector('.music-icon').textContent = '🎶';
-      }).catch(err => {
-        console.log('音乐播放需要用户交互:', err);
-      });
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          player.classList.add('playing');
+          musicIcon.textContent = '🎶';
+        }).catch(err => {
+          console.log('需要用户交互才能播放音乐:', err);
+        });
+      }
     }
     isPlaying = !isPlaying;
+  }
+
+  // 音量控制
+  volumeSlider.addEventListener('input', () => {
+    audio.volume = parseFloat(volumeSlider.value);
+    updateVolumeIcon();
   });
 
+  function updateVolumeIcon() {
+    const vol = audio.volume;
+    if (vol === 0) volumeIcon.textContent = '🔇';
+    else if (vol < 0.3) volumeIcon.textContent = '🔈';
+    else if (vol < 0.7) volumeIcon.textContent = '🔉';
+    else volumeIcon.textContent = '🔊';
+  }
+
+  let prevVolume = 0.4;
+  volumeIcon.addEventListener('click', () => {
+    if (audio.volume > 0) {
+      prevVolume = audio.volume;
+      audio.volume = 0;
+      volumeSlider.value = 0;
+    } else {
+      audio.volume = prevVolume;
+      volumeSlider.value = prevVolume;
+    }
+    updateVolumeIcon();
+  });
+
+  // 加载失败提示
+  audio.addEventListener('error', () => {
+    musicTitle.textContent = '⚠️ 加载失败';
+  });
+
+  // 自动尝试播放
+  setTimeout(() => {
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise.then(() => {
+        player.classList.add('playing');
+        musicIcon.textContent = '🎶';
+        isPlaying = true;
+      }).catch(() => {});
+    }
+  }, 1000);
+
+  // 用户点击页面时自动播放
+  document.addEventListener('click', function autoPlayHandler() {
+    if (!isPlaying) {
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          player.classList.add('playing');
+          musicIcon.textContent = '🎶';
+          isPlaying = true;
+        }).catch(() => {});
+      }
+    }
+    document.removeEventListener('click', autoPlayHandler);
+  }, { once: true });
+
   // 存储到全局
-  window.audioPlayer = { audio, player, isPlaying };
+  window.audioPlayer = { audio, player, isPlaying, togglePlay, nextTrack, prevTrack };
 }
 
 // 初始化爱心飘落效果
@@ -285,7 +431,126 @@ function throttle(func, limit) {
 }
 
 // 页面加载完成后初始化
-document.addEventListener('DOMContentLoaded', initApp);
+document.addEventListener('DOMContentLoaded', function() {
+  initApp();
+  initRouter();
+});
+
+// ============================================
+// SPA 路由 - 页面切换时保持音乐持续播放
+// ============================================
+
+// 页面初始化映射
+const PAGE_INIT = {
+  'index.html':    { fn: 'initIndex' },
+  'album.html':    { fn: 'initAlbum' },
+  'countdown.html': { fn: 'initCountdown' },
+  'message.html':  { fn: 'initMessage' },
+};
+
+// 当前页面
+let currentPage = 'index.html';
+
+// 初始化 SPA 路由
+function initRouter() {
+  // 监听所有导航点击
+  document.addEventListener('click', async (e) => {
+    const link = e.target.closest('a[href]');
+    if (!link) return;
+
+    const href = link.getAttribute('href');
+    // 只拦截 .html 的内部链接
+    if (!href || !href.endsWith('.html') || href.startsWith('http') || href.startsWith('https')) return;
+
+    e.preventDefault();
+    await navigateTo(href);
+  });
+
+  // 监听浏览器前进/后退
+  window.addEventListener('popstate', (e) => {
+    if (e.state && e.state.page) {
+      navigateTo(e.state.page, true);
+    }
+  });
+
+  // 记录初始页面
+  const path = window.location.pathname.split('/').pop() || 'index.html';
+  currentPage = path;
+  history.replaceState({ page: currentPage }, '', currentPage);
+}
+
+// 切换到目标页面
+async function navigateTo(page, isPopState = false) {
+  if (page === currentPage) return;
+
+  try {
+    // 1. 获取目标页面 HTML
+    const response = await fetch(page);
+    if (!response.ok) throw new Error(`加载失败: ${response.status}`);
+    const html = await response.text();
+
+    // 2. 用 DOMParser 解析 HTML
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+
+    // 3. 提取 <main> 内容（包含页面专属样式）
+    const newMain = doc.querySelector('main.main-content');
+    if (!newMain) throw new Error('未找到主内容区域');
+
+    // 4. 替换当前页面内容
+    const currentMain = document.querySelector('main.main-content');
+    currentMain.innerHTML = newMain.innerHTML;
+
+    // 5. 更新页面标题
+    document.title = doc.title;
+
+    // 6. 更新浏览器历史记录
+    if (!isPopState) {
+      history.pushState({ page }, '', page);
+    }
+    currentPage = page;
+
+    // 7. 更新导航高亮
+    updateActiveNav(page);
+
+    // 8. 重新初始化页面功能
+    const pageConfig = PAGE_INIT[page];
+    if (pageConfig) {
+      // 等待 DOM 更新完成
+      await new Promise(resolve => setTimeout(resolve, 50));
+      const fn = window[pageConfig.fn];
+      if (typeof fn === 'function') {
+        fn();
+      }
+    }
+
+    // 9. 重新触发淡入动画
+    document.querySelectorAll('.fade-in').forEach((el, i) => {
+      el.style.animation = 'none';
+      el.offsetHeight; // 触发回流
+      el.style.animation = `fadeIn 0.6s ease-out ${i * 0.1}s forwards`;
+      el.style.opacity = '0';
+    });
+
+  } catch (error) {
+    console.error('页面切换失败:', error);
+    // 如果 SPA 切换失败，回退到直接跳转
+    window.location.href = page;
+  }
+}
+
+// 更新导航高亮
+function updateActiveNav(page) {
+  const links = document.querySelectorAll('.nav-links a');
+  links.forEach(link => {
+    const href = link.getAttribute('href');
+    if (href === page) {
+      link.classList.add('active');
+    } else {
+      link.classList.remove('active');
+    }
+  });
+}
 
 // 导出到全局
 window.app = {

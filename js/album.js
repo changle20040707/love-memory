@@ -7,18 +7,17 @@ let currentPhotoIndex = 0;
 let currentImageIndex = 0;
 let filteredPhotos = [];
 
-// 初始化相册
+// 初始化相册（兼容直接加载和 SPA 路由切换）
 document.addEventListener('DOMContentLoaded', function() {
-  // 等待配置加载
-  const checkConfig = setInterval(() => {
-    if (window.app && window.app.config) {
-      clearInterval(checkConfig);
-      initAlbum();
-    }
-  }, 100);
+  initAlbum();
 });
 
 function initAlbum() {
+  // 等待配置加载
+  if (!window.app || !window.app.config) {
+    setTimeout(initAlbum, 100);
+    return;
+  }
   const config = window.app.config;
   allPhotos = config.photos || [];
   filteredPhotos = [...allPhotos];
