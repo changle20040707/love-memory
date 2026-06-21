@@ -11,6 +11,9 @@ async function initApp() {
     // 加载配置
     CONFIG = await loadConfig();
 
+    // 初始化开屏封面
+    initCoverScreen();
+
     // 初始化音乐播放器
     initMusicPlayer();
 
@@ -61,6 +64,71 @@ function getDefaultConfig() {
       subtitle: "记录每一个美好瞬间"
     }
   };
+}
+
+// ============================================
+// 开屏封面
+// ============================================
+function initCoverScreen() {
+  // 检查是否在本会话中已经看过封面
+  if (sessionStorage.getItem('loveCoverShown')) return;
+
+  // 查找封面图片是否存在
+  const img = new Image();
+  img.onload = function() {
+    createCoverScreen();
+  };
+  img.onerror = function() {
+    // 封面图片不存在，跳过
+  };
+  img.src = 'images/cover.jpg';
+}
+
+function createCoverScreen() {
+  const couple = CONFIG.couple || {};
+
+  const cover = document.createElement('div');
+  cover.id = 'coverScreen';
+  cover.innerHTML = `
+    <div class="cover-bg" style="background-image: url('images/cover.jpg')"></div>
+    <div class="cover-overlay"></div>
+    <div class="cover-content">
+      <div class="cover-heart">💕</div>
+      <div class="cover-names">
+        <span class="cover-name">${escapeHtml(couple.name1 || '')}</span>
+        <span class="cover-name-heart">❤️</span>
+        <span class="cover-name">${escapeHtml(couple.name2 || '')}</span>
+      </div>
+      <div class="cover-subtitle">我们的爱情故事</div>
+      <button class="cover-btn" id="coverEnterBtn">
+        进入 💕
+      </button>
+    </div>
+  `;
+  document.body.appendChild(cover);
+
+  // 点击按钮进入
+  document.getElementById('coverEnterBtn').addEventListener('click', () => {
+    cover.classList.add('cover-hidden');
+    // 动画结束后移除
+    setTimeout(() => {
+      cover.remove();
+    }, 800);
+    // 标记已看
+    sessionStorage.setItem('loveCoverShown', 'true');
+  });
+
+  // 点击背景也能进入
+  cover.addEventListener('click', (e) => {
+    if (e.target === cover || e.target.classList.contains('cover-overlay')) {
+      document.getElementById('coverEnterBtn').click();
+    }
+  });
+
+  // 延迟显示按钮（等图片加载）
+  setTimeout(() => {
+    cover.classList.add('cover-ready');
+  }, 300);
 }
 
 // 初始化音乐播放器
